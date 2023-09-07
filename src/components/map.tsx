@@ -10,10 +10,12 @@ export type GeoMercatorProps = {
   width: number;
   height: number;
   events?: boolean;
-  countryValue?: {
-    id: string,
-    value: number
-  }
+  countryValues?: CountryValue[]
+};
+
+export type CountryValue = {
+  id: string,
+  value: number
 };
 
 interface FeatureShape {
@@ -37,7 +39,7 @@ const color = scaleQuantize({
   range: ['#ffb01d', '#ffa020', '#ff9221', '#ff8424', '#ff7425', '#fc5e2f', '#f94b3a', '#f63a48'],
 });
 
-export default function ({ width, height, events = false , countryValue}: GeoMercatorProps) {
+export default function ({ width, height, events = false , countryValues: countryValue}: GeoMercatorProps) {
   const centerX = width / 2;
   const centerY = height / 2;
   const scale = (width / 630) * 100;
@@ -57,7 +59,7 @@ export default function ({ width, height, events = false , countryValue}: GeoMer
               <path
                 key={`map-feature-${i}`}
                 d={path || ''}
-                fill={color(feature.geometry.coordinates.length)}
+                fill={color(matchValueToFeature(countryValue, feature))}
                 stroke={background}
                 strokeWidth={0.5}
                 onClick={() => {
@@ -70,4 +72,8 @@ export default function ({ width, height, events = false , countryValue}: GeoMer
       </Mercator>
     </svg>
   );
+}
+
+function matchValueToFeature(countryValue: CountryValue[] | undefined, feature: FeatureShape): number {
+  return countryValue?.find((countryValue) => { return countryValue.id === feature.id; })?.value ?? 0;
 }

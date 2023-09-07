@@ -7,6 +7,8 @@ export interface ITravelWarning {
     // Titel des Landes
     CountryCode:	string
     // Zweistelliger Ländercode
+    iso3CountryCode: string,
+    // dreistelliger Ländercode
     CountryName:	string
     // (Deutscher) Name des Landes
     warning: boolean
