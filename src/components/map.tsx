@@ -9,16 +9,17 @@ export const background = '#f9f7e8';
 export type GeoMercatorProps = {
   width: number;
   height: number;
-  events?: boolean;
-  countryValues?: CountryValue[]
+  countryValues?: CountryValue[];
+  eventCallback?: (feature: FeatureShape, countryValue: CountryValue) => any
 };
 
 export type CountryValue = {
   id: string,
-  value: number
+  value: number,
+  type?: 'red' | 'green' 
 };
 
-interface FeatureShape {
+export interface FeatureShape {
   type: 'Feature';
   id: string;
   geometry: { coordinates: [number, number][][]; type: 'Polygon' };
@@ -39,7 +40,25 @@ const color = scaleQuantize({
   range: ['#ffb01d', '#ffa020', '#ff9221', '#ff8424', '#ff7425', '#fc5e2f', '#f94b3a', '#f63a48'],
 });
 
-export default function ({ width, height, events = false , countryValues: countryValue}: GeoMercatorProps) {
+const ranges = new Map<string, string[]>(
+  [
+    ['red', ['#ffb01d', '#ffa020', '#ff9221', '#ff8424', '#ff7425', '#fc5e2f', '#f94b3a', '#f63a48']],
+    ['green', ['#ffb01d', '#ccff33', '#99ff33', '#66ff33', '#33cc33', '#00cc00', '#339933', '#66ff33']]
+  ])
+
+function getColor(countryValue: CountryValue)  {
+  return scaleQuantize({
+    domain: [
+      0,
+      1,
+    ],
+    range: ranges.get(countryValue.type ?? 'red'),
+  })(countryValue.value);
+}
+
+
+
+export default function ({ width, height, eventCallback , countryValues}: GeoMercatorProps) {
   const centerX = width / 2;
   const centerY = height / 2;
   const scale = (width / 630) * 100;
@@ -59,11 +78,11 @@ export default function ({ width, height, events = false , countryValues: countr
               <path
                 key={`map-feature-${i}`}
                 d={path || ''}
-                fill={color(matchValueToFeature(countryValue, feature))}
+                fill={getColor(matchValueToFeature(countryValues, feature))}
                 stroke={background}
                 strokeWidth={0.5}
                 onClick={() => {
-                  if (events) alert(`Clicked: ${feature.properties.name} (${feature.id})`);
+                  if (eventCallback) eventCallback(feature, matchValueToFeature(countryValues, feature));
                 }}
               />
             ))}
@@ -74,6 +93,6 @@ export default function ({ width, height, events = false , countryValues: countr
   );
 }
 
-function matchValueToFeature(countryValue: CountryValue[] | undefined, feature: FeatureShape): number {
-  return countryValue?.find((countryValue) => { return countryValue.id === feature.id; })?.value ?? 0;
+function matchValueToFeature(countryValues: CountryValue[] | undefined, feature: FeatureShape): CountryValue {
+  return countryValues?.find((countryValue) => { return countryValue.id === feature.id; }) ?? {id: '', value: 0};
 }
