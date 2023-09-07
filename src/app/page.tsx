@@ -43,9 +43,10 @@ function getCountryValues(travelWarnings: ITravelWarning[]): CountryValue[] {
 
 function getCountryValue(warning: ITravelWarning): CountryValue {
   const id = warning.iso3CountryCode;
-  const type = warning.situationWarning || warning.situationPartWarning ? 'green' : 'red';
-  let value = warning.warning || warning.situationWarning ? 1 : 0;
-  value = warning.partialWarning || warning.situationPartWarning ? 0.5 : 0;
+  const type =(warning.situationWarning || warning.situationPartWarning) ? 'green' : 'red';
+  let value = (warning.warning || warning.situationWarning) ? 1 : 0;
+  value = (warning.partialWarning || warning.situationPartWarning) ? 0.5 : value;
+
   return {
     id,
     value,
