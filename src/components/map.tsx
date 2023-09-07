@@ -43,7 +43,7 @@ const color = scaleQuantize({
 const ranges = new Map<string, string[]>(
   [
     ['red', ['#ffb01d', '#ffa020', '#ff9221', '#ff8424', '#ff7425', '#fc5e2f', '#f94b3a', '#f63a48']],
-    ['green', ['#ffb01d', '#ccff33', '#99ff33', '#66ff33', '#33cc33', '#00cc00', '#339933', '#66ff33']]
+    ['green', ['#ffb01d', '#ccff33', '#99ff33', '#66ff33', '#33cc33', '#00cc00', '#339933', '#339933']]
   ])
 
 function getColor(countryValue: CountryValue)  {
