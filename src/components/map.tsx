@@ -56,8 +56,6 @@ function getColor(countryValue: CountryValue)  {
   })(countryValue.value);
 }
 
-
-
 export default function ({ width, height, eventCallback , countryValues}: GeoMercatorProps) {
   const centerX = width / 2;
   const centerY = height / 2;
@@ -69,8 +67,7 @@ export default function ({ width, height, eventCallback , countryValues}: GeoMer
       <Mercator<FeatureShape>
         data={world.features}
         scale={scale}
-        translate={[centerX, centerY + 50]}
-      >
+        translate={[centerX, centerY + 50]}>
         {(mercator) => (
           <g>
             <Graticule graticule={(g) => mercator.path(g) || ''} stroke="rgba(33,33,33,0.05)" />
