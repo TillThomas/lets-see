@@ -5,7 +5,6 @@ import { ITravelWarning } from '@/models/travelWarning.model';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { feature } from 'topojson-client';
 
 export default function Home() {
   const [travelWarnings, setTravelWarnings] = useState<ITravelWarning[]>([]);
