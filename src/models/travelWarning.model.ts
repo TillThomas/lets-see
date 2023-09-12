@@ -19,4 +19,6 @@ export interface ITravelWarning {
     // Steht aktuell (Januar 2022) für „COVID-19-bedingte Reisewarnung“ kann sich in Zukunft möglicherweise ändern.
     situationPartWarning:	boolean
     // Steht aktuell (Januar 2022) für „COVID-19-bedingte Teilreisewarnung“ kann sich in Zukunft möglicherweise ändern.
+    contentID?: string,
+    content?: string
 }

@@ -1,0 +1,13 @@
+.details {
+    background-color: magenta;
+}
+
+.details * {
+    border: 2 solid black;
+}
+
+div.info-box {
+    border: 2px solid magenta;
+    border-radius: 5px;
+    background-color: rgba(#000000, .2);
+}

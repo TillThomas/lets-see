@@ -3,6 +3,7 @@ import { scaleQuantize } from '@visx/scale';
 import { Mercator, Graticule } from '@visx/geo';
 import * as topojson from 'topojson-client';
 import topology from './world-topo.json';
+import { CountryValue } from '@/services/warning.service';
 
 export const background = '#f9f7e8';
 
@@ -10,14 +11,9 @@ export type GeoMercatorProps = {
   width: number;
   height: number;
   countryValues?: CountryValue[];
-  eventCallback?: (feature: FeatureShape, countryValue: CountryValue) => any
+  eventCallback?: (countryValue: CountryValue) => any
 };
 
-export type CountryValue = {
-  id: string,
-  value: number,
-  type?: 'red' | 'green' 
-};
 
 export interface FeatureShape {
   type: 'Feature';
@@ -79,7 +75,7 @@ export default function ({ width, height, eventCallback , countryValues}: GeoMer
                 stroke={background}
                 strokeWidth={0.5}
                 onClick={() => {
-                  if (eventCallback) eventCallback(feature, matchValueToFeature(countryValues, feature));
+                  if (eventCallback) eventCallback(matchValueToFeature(countryValues, feature));
                 }}
               />
             ))}
@@ -93,3 +89,4 @@ export default function ({ width, height, eventCallback , countryValues}: GeoMer
 function matchValueToFeature(countryValues: CountryValue[] | undefined, feature: FeatureShape): CountryValue {
   return countryValues?.find((countryValue) => { return countryValue.id === feature.id; }) ?? {id: '', value: 0};
 }
+
