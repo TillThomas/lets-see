@@ -34,5 +34,5 @@ function formatData(data: {response: ITravelWarning[]}): ITravelWarning[] {
 async function getWarning(countryIsoID: string): Promise<ITravelWarning> {
     return fetch('https://www.auswaertiges-amt.de/opendata/travelwarning/' + countryIsoID)
     .then((res) => res.json())
-    .then((data) => formatData(data)[0]);
+    .then((data) => formatData(data)[0])
 }
