@@ -33,7 +33,7 @@ export default function Page({ params }: { params: { ID: string } }) {
       .then((contentId) => {
         if(contentId) fetchDetails(contentId);
       })
-    }, []);
+    }, [fetch, fetchDetails, params.ID]);
 
 
     function back(): MouseEventHandler<HTMLButtonElement> | undefined {

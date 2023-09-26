@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function Home() {
   const router = useRouter();
   const fetch = useWarningStore((state) => state.fetchWarnings);
+  const warnings = useWarningStore((state) => state.warnings);
   fetch();
 
   function onCountryClick(countryValue: CountryValue): void {
@@ -23,7 +24,7 @@ export default function Home() {
       <div className='lg:w-5/6 lg:h-5/6 w-screen h-screen'>
         <ParentSize>{({ width, height }) => 
           <Map width={width} height={height} 
-            countryValues={warningService.getCountryValues(useWarningStore((state) => state.warnings))}
+            countryValues={warningService.getCountryValues(warnings)}
             eventCallback={onCountryClick}/>}
         </ParentSize>
       </div>
