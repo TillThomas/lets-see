@@ -1,13 +1,13 @@
-.details {
-    background-color: magenta;
+.header {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    background-color: #f9f7e8;
+    margin: auto;
+    width: 100%;
+    justify-content: center;
 }
 
-.details * {
-    border: 2 solid black;
-}
-
-div.info-box {
-    border: 2px solid magenta;
-    border-radius: 5px;
-    background-color: rgba(#000000, .2);
+.header button {
+    flex-shrink: 0;
 }

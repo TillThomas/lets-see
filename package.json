@@ -15,6 +15,7 @@
     "@visx/geo": "^3.3.0",
     "@visx/responsive": "^3.3.0",
     "@visx/scale": "^3.3.0",
+    "@visx/zoom": "^3.3.0",
     "autoprefixer": "10.4.15",
     "dompurify": "^3.0.5",
     "eslint": "8.48.0",

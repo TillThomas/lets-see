@@ -20,7 +20,7 @@ export default function Home() {
   }
 
   return (
-      <div className='w-5/6 h-5/6 '>
+      <div className='lg:w-5/6 lg:h-5/6 w-screen h-screen'>
         <ParentSize>{({ width, height }) => 
           <Map width={width} height={height} 
             countryValues={warningService.getCountryValues(useWarningStore((state) => state.warnings))}

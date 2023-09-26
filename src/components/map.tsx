@@ -1,9 +1,11 @@
 import React from 'react';
 import { scaleQuantize } from '@visx/scale';
-import { Mercator, Graticule } from '@visx/geo';
+import { Graticule, EqualEarth } from '@visx/geo';
 import * as topojson from 'topojson-client';
 import topology from './world-topo.json';
 import { CountryValue } from '@/services/warning.service';
+import { Zoom } from '@visx/zoom';
+import style from './map.module.scss';
 
 export const background = '#f9f7e8';
 
@@ -52,37 +54,111 @@ function getColor(countryValue: CountryValue)  {
   })(countryValue.value);
 }
 
-export default function ({ width, height, eventCallback , countryValues}: GeoMercatorProps) {
+export default function MapComponent({ width, height, eventCallback , countryValues}: GeoMercatorProps) {
   const centerX = width / 2;
   const centerY = height / 2;
-  const scale = (width / 630) * 100;
+
+  const minScale = (height / 300) * 100;
+  const maxScale = 2000;
+  const initialScale = Math.max((height / 630) * 100, minScale);
+
+  console.log(initialScale)
 
   return width < 10 ? null : (
-    <svg width={width} height={height}>
-      <rect x={0} y={0} width={width} height={height} fill={background} rx={14} />
-      <Mercator<FeatureShape>
-        data={world.features}
-        scale={scale}
-        translate={[centerX, centerY + 50]}>
-        {(mercator) => (
-          <g>
-            <Graticule graticule={(g) => mercator.path(g) || ''} stroke="rgba(33,33,33,0.05)" />
-            {mercator.features.map(({ feature, path }, i) => (
-              <path
-                key={`map-feature-${i}`}
-                d={path || ''}
-                fill={getColor(matchValueToFeature(countryValues, feature))}
-                stroke={background}
-                strokeWidth={0.5}
-                onClick={() => {
-                  if (eventCallback) eventCallback(matchValueToFeature(countryValues, feature));
-                }}
-              />
-            ))}
-          </g>
-        )}
-      </Mercator>
-    </svg>
+
+    <Zoom<SVGSVGElement>
+    width={width}
+    height={height}
+    scaleXMin={minScale}
+    scaleXMax={maxScale}
+    scaleYMin={minScale}
+    scaleYMax={maxScale}
+    initialTransformMatrix={{
+      scaleX: initialScale,
+      scaleY: initialScale,
+      translateX: centerX,
+      translateY: centerY,
+      skewX: 0,
+      skewY: 0,
+    }}
+  >
+    {(zoom) => (
+      <div className={style.container}>
+        <svg width={width} 
+          height={height}               
+          className={zoom.isDragging ? 'dragging' : undefined}
+          ref={zoom.containerRef}
+          style={{ touchAction: 'none' }}>
+          <rect x={0} y={0} width={width} height={height} fill={background} rx={14} />
+
+          {/** intercept all mouse events */}
+          <rect
+              x={0}
+              y={0}
+              width={width}
+              height={height}
+              rx={14}
+              fill="transparent"
+              onClick={() => {console.log('click'); }}
+              onTouchStart={zoom.dragStart}
+              onTouchMove={zoom.dragMove}
+              onTouchEnd={zoom.dragEnd}
+              onMouseDown={() => {console.log('start'),zoom.dragStart}}
+              onMouseMove={() => {console.log('move'),zoom.dragMove}}
+              onMouseUp={zoom.dragEnd}
+              onMouseLeave={() => {
+                if (zoom.isDragging) zoom.dragEnd();
+              }}
+            />
+
+          <EqualEarth<FeatureShape>
+            data={world.features}
+            scale={zoom.transformMatrix.scaleX}
+            translate={[zoom.transformMatrix.translateX, zoom.transformMatrix.translateY]}>
+            {(mercator) => (
+              <g>
+                <Graticule graticule={(g) => mercator.path(g) || ''} stroke="rgba(33,33,33,0.05)" />
+                {mercator.features.map(({ feature, path }, i) => (
+                  <path
+                    key={`map-feature-${i}`}
+                    d={path || ''}
+                    fill={getColor(matchValueToFeature(countryValues, feature))}
+                    stroke={background}
+                    strokeWidth={0.5}
+                    onClick={() => {
+                      if (eventCallback) eventCallback(matchValueToFeature(countryValues, feature));
+                    }}
+                  />
+                ))}
+              </g>
+            )}
+          </EqualEarth>
+        </svg>
+          <div className={style.controls}>
+            <button
+              className={style.btn}
+              onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}>
+              <svg>
+                <use href='/zoom_in.svg#zoom_in'></use>
+              </svg>
+            </button>
+            <button
+              className={style.btn}
+              onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}>
+              <svg>
+                <use href='/zoom_out.svg#zoom_out'></use>
+              </svg>
+            </button>
+            <button className={style.btn}
+              onClick={zoom.reset}>
+              <svg>
+                <use href='/crop_free.svg#crop_free'></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+    </Zoom>
   );
 }
 
