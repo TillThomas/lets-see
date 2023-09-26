@@ -1,0 +1,40 @@
+$primary: #6d3960;
+$contrast: #f9f7e8;
+
+.container {
+  position: relative;  
+  svg {
+    cursor: grab;
+  }
+  svg.dragging {
+    cursor: grabbing;
+  }
+}
+
+.btn {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  text-align: center;
+  border: none;
+  background: $primary;
+  padding: 0;
+  border-radius: 50%;
+  color: $contrast;
+
+  svg {
+    height: 24px;
+    width: 24px;
+
+    margin: auto;
+  }
+}
+
+.controls {
+  position: absolute;
+  bottom: 20px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}

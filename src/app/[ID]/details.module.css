@@ -1,0 +1,13 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    background-color: #f9f7e8;
+    margin: auto;
+    width: 100%;
+    justify-content: center;
+}
+
+.header button {
+    flex-shrink: 0;
+}
