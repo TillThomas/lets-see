@@ -1,55 +1,36 @@
 'use client'
 
-import Map, { CountryValue, FeatureShape } from '@/components/map';
+import Map, { FeatureShape } from '@/components/map';
 import { ITravelWarning } from '@/models/travelWarning.model';
+import warningService, { CountryValue } from '@/services/warning.service';
+import { useWarningStore } from '@/stores/warning.store';
 import ParentSize from '@visx/responsive/lib/components/ParentSize';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [travelWarnings, setTravelWarnings] = useState<ITravelWarning[]>([]);
   const router = useRouter();
+  const fetch = useWarningStore((state) => state.fetchWarnings);
+  const warnings = useWarningStore((state) => state.warnings);
+  fetch();
 
-  useEffect(() => {
-    fetch('https://www.auswaertiges-amt.de/opendata/travelwarning')
-    .then((res) => res.json())
-    .then((data) => formatData(data))
-    .then((formatedData) => setTravelWarnings(formatedData))
-  }, []);
-
-  async function formatData(data: {response: ITravelWarning[]}): Promise<ITravelWarning[]> {
-    return Object.values(data.response) 
-  }
-
-  function onCountryClick(feature: FeatureShape, countryValue: CountryValue): void {
-    router.push(`/${countryValue.id}`);
+  function onCountryClick(countryValue: CountryValue): void {
+    const warning = getWarning(countryValue.id) 
+    if(warning) {
+      router.push(`/${countryValue.id}`);
+    };
   }
 
   return (
-      <div className='w-5/6 h-5/6 '>
+      <div className='lg:w-5/6 lg:h-5/6 w-screen h-screen'>
         <ParentSize>{({ width, height }) => 
           <Map width={width} height={height} 
-            countryValues={getCountryValues(travelWarnings)}
+            countryValues={warningService.getCountryValues(warnings)}
             eventCallback={onCountryClick}/>}
         </ParentSize>
       </div>
   )
 }
 
-function getCountryValues(travelWarnings: ITravelWarning[]): CountryValue[] {
-  return travelWarnings.map((warning: ITravelWarning) => getCountryValue(warning))
+function getWarning(id: string): ITravelWarning | undefined {
+  return useWarningStore.getState().warnings.find((warning) => warning.iso3CountryCode === id);
 }
-
-function getCountryValue(warning: ITravelWarning): CountryValue {
-  const id = warning.iso3CountryCode;
-  const type =(warning.situationWarning || warning.situationPartWarning) ? 'green' : 'red';
-  let value = (warning.warning || warning.situationWarning) ? 1 : 0;
-  value = (warning.partialWarning || warning.situationPartWarning) ? 0.5 : value;
-
-  return {
-    id,
-    value,
-    type
-  }
-}
-

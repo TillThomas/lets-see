@@ -5,3 +5,55 @@
 body {
   background-color: #f9f7e8;
 }
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+    @apply mt-5;
+    @apply mb-10;
+  }
+  h2 {
+    @apply text-xl;
+    @apply mt-5;
+    @apply mb-7;
+  }
+  h3 {
+    @apply text-lg;
+    @apply mt-5;
+    @apply mb-5;
+  }
+  h4 {
+    @apply text-base;
+    @apply mt-5;
+    @apply mb-5;
+  }
+
+}
+
+.details .info-box {
+      border: 2px solid #0000004f;
+      border-radius: 5px;
+      background-color: #00000008;
+      padding: 20px;
+      margin: 60px 0;
+  }
+
+.details a {
+  color: #ffb01d;
+}
+
+.details > div > p {
+  margin-left: 1rem;
+  padding-bottom: 2rem;
+  padding-left: 1rem;
+  border-left: 2px solid #ffb01d;
+}
+
+.details ul {
+  margin-left: 3rem;
+}
+
+.details li {
+  margin-bottom: 0.5rem;
+  list-style: disc outside;
+}
